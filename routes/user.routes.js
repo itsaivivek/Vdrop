@@ -96,9 +96,9 @@ router.post('/login',
         },
             process.env.JWT_SECRET,
         )
-        res.json({
-            token
-        })
+        res.cookie('token', token)
+
+        res.send('Loggen in');
     }
 )
 module.exports = router;
