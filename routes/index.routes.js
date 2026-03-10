@@ -11,15 +11,21 @@ const fileModel = require('../models/file.models')
 const { ID, InputFile } = require('node-appwrite');
 
 const authMiddleware = require('../middlewares/authe');
-const auth = require('../middlewares/authe');
+const jwt = require('jsonwebtoken');
 
 router.get('/home', authMiddleware, async(req, res) => {
-    res.render('home');
+    const userFiles = await fileModel.find({
+        userId: req.user.userId
+    })
+
+    res.render('home', {
+        files: userFiles
+    })
+
 })
 
 router.post('/upload', authMiddleware, upload.single('file'), async (req, res) => {
     try {
-        console.log("user.id = ", req.user.userId)
         // Debug: Check if req.user exists
         if (!req.user.userId) {
             return res.status(401).json({ error: "User not authenticated" });
@@ -42,6 +48,24 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
+})
+
+router.get('/download/:path', authMiddleware, async(req, res) =>{
+    const loggedInUserid = req.user.userId;
+    const path = req.params.path
+    
+    // Find file by comparing request user to loggedinUser
+    const file = await fileModel.findOne({
+        userId: loggedInUserid,
+        fileId: path
+    })
+
+    if(!file){
+        return res.status(401).json({
+            message: 'Unauthorized'
+        })
+    }
+    res.send(path);
 })
 
 module.exports = router;
