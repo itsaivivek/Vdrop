@@ -1,0 +1,25 @@
+{
+  "name": "vdrop",
+  "version": "1.0.0",
+  "description": "A full-stack cloud storage simulation built with Node.js (Express) and MongoDB. Features secure user authentication via Mongoose, scalable file management with Firebase Storage, and a modern, responsive UI crafted using Tailwind CSS, Flowbite, and EJS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsaivivek/Vdrop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itsaivivek/Vdrop/issues"
+  },
+  "homepage": "https://github.com/itsaivivek/Vdrop#readme",
+  "dependencies": {
+    "ejs": "^5.0.1",
+    "express": "^5.2.1"
+  }
+}
