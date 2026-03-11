@@ -1,11 +1,170 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Tailwind -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!-- Flowbite -->
+<link href="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.css" rel="stylesheet"/>
+
+<!-- Remix icons -->
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css" rel="stylesheet"/>
+
+<title>Vdrop</title>
+
 </head>
-<body>
-    <h1>Hello world</h1>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+
+<!-- NAVBAR -->
+<header class="bg-white dark:bg-gray-800 shadow-sm">
+<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+<h1 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+<i class="ri-cloud-line text-blue-600"></i> Vdrop
+</h1>
+
+<button onclick="toggleTheme()"
+class="px-3 py-1 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-white">
+<i class="ri-moon-line"></i>
+</button>
+
+</div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="max-w-6xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
+
+<!-- LEFT TEXT -->
+<div class="flex-1">
+
+<h2 class="text-4xl font-bold text-gray-800 dark:text-white leading-tight">
+Upload & Access Your Files <br> From Anywhere
+</h2>
+
+<p class="mt-6 text-gray-600 dark:text-gray-300 text-lg">
+<b>Vdrop</b> is a cloud platform where you can upload and download files securely from the cloud.  
+To start using Vdrop you must login to your account.
+</p>
+
+<div class="mt-8 flex gap-4">
+
+<a href="/user/login"
+class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
+Login
+</a>
+
+<a href="/user/register"
+class="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white rounded-lg font-medium">
+Create Account
+</a>
+
+</div>
+
+</div>
+
+<!-- RIGHT ILLUSTRATION -->
+<div class="flex-1 flex justify-center">
+
+<div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-10 w-80">
+
+<div class="flex flex-col items-center gap-4">
+
+<i class="ri-cloud-upload-line text-6xl text-blue-500"></i>
+
+<h3 class="text-lg font-semibold text-gray-800 dark:text-white">
+Store Files in Cloud
+</h3>
+
+<p class="text-sm text-gray-500 text-center">
+Upload documents, images, videos and access them anytime.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FEATURES -->
+<section class="max-w-6xl mx-auto px-6 pb-20">
+
+<h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-10 text-center">
+Why Use Vdrop?
+</h2>
+
+<div class="grid md:grid-cols-3 gap-8">
+
+<div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+
+<i class="ri-upload-cloud-line text-3xl text-blue-500"></i>
+
+<h3 class="mt-4 font-semibold text-gray-800 dark:text-white">
+Easy Upload
+</h3>
+
+<p class="text-sm text-gray-500 mt-2">
+Upload files quickly with drag & drop support.
+</p>
+
+</div>
+
+
+<div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+
+<i class="ri-download-cloud-line text-3xl text-green-500"></i>
+
+<h3 class="mt-4 font-semibold text-gray-800 dark:text-white">
+Download Anytime
+</h3>
+
+<p class="text-sm text-gray-500 mt-2">
+Access your stored files anytime from anywhere.
+</p>
+
+</div>
+
+
+<div class="bg-white dark:bg-gray-800 shadow rounded-xl p-6 text-center">
+
+<i class="ri-shield-check-line text-3xl text-purple-500"></i>
+
+<h3 class="mt-4 font-semibold text-gray-800 dark:text-white">
+Secure Storage
+</h3>
+
+<p class="text-sm text-gray-500 mt-2">
+Your files are stored securely in the cloud.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-white dark:bg-gray-800 py-6 text-center text-sm text-gray-500">
+© <%= new Date().getFullYear() %> Vdrop • Cloud File Storage
+</footer>
+
+
+<script>
+
+function toggleTheme(){
+document.documentElement.classList.toggle("dark")
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+
 </body>
 </html>

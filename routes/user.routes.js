@@ -43,7 +43,8 @@ router.post('/register',
             password: hashPassword
         })
 
-        res.json(newUser);
+        // res.json(newUser);
+        res.redirect('/user/login')
     })
 
 // router for login
@@ -98,7 +99,8 @@ router.post('/login',
         )
         res.cookie('token', token)
 
-        res.send('Loggen in');
+        // res.send('Loggen in');
+        res.redirect('/home')
     }
 )
 module.exports = router;
