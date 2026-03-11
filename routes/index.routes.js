@@ -19,7 +19,8 @@ router.get('/', async (req, res) => {
 router.get('/home', authMiddleware, async (req, res) => {
     const userFiles = await fileModel.find({
         userId: req.user.userId
-    })
+    }).sort({uploadedAt: -1}); //newest first
+
 
     const totalStorageResult = await fileModel.aggregate([
         { $match: { userId: req.user.userId } },
@@ -30,11 +31,34 @@ router.get('/home', authMiddleware, async (req, res) => {
 
     const numberOfFiles = userFiles.length;
 
+    // Get the most recent upload time
+    let recentUploadText = 'No uploads yet';
+    if (userFiles.length > 0) {
+        const latestDate = userFiles[0].uploadedAt;  // since sorted -1, index 0 is newest
+        const today = new Date();
+        const uploadDate = new Date(latestDate);
+
+    if (uploadDate.toDateString() === today.toDateString()) {
+            recentUploadText = 'Today at ' + uploadDate.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
+        } else if (
+            uploadDate.toDateString() === new Date(today.setDate(today.getDate() - 1)).toDateString()
+        ) {
+            recentUploadText = 'Yesterday';
+        } else {
+            recentUploadText = uploadDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    }
 
     res.render('home', {
         files: userFiles,
         uploadedFiles: numberOfFiles,
-        storageUsed: totalBytes
+        storageUsed: totalBytes,
+        recentUploadText
     })
 
 })
