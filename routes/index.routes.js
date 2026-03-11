@@ -11,15 +11,22 @@ const fileModel = require('../models/file.models')
 const { ID, InputFile } = require('node-appwrite');
 
 const authMiddleware = require('../middlewares/authe');
-const jwt = require('jsonwebtoken');
+
+router.get('/', async (req, res)=>{
+    res.render('index')
+})
 
 router.get('/home', authMiddleware, async(req, res) => {
     const userFiles = await fileModel.find({
         userId: req.user.userId
     })
+    const numberOfFiles = await fileModel.countDocuments({
+        userId: req.user.userId
+    })
 
     res.render('home', {
-        files: userFiles
+        files: userFiles,
+        uploadedFiles: numberOfFiles,
     })
 
 })
@@ -36,7 +43,7 @@ router.post('/upload', authMiddleware, upload.single('file'), async (req, res) =
             ID.unique(), 
             new File([req.file.buffer], req.file.originalname)
         );
-        console.log("resposse.id = ", response.$id)
+        
         // 2. Save metadata to MongoDB
         await fileModel.create({
             userId: req.user.userId, // From your authMiddleware
