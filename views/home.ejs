@@ -51,12 +51,16 @@
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
                 <p class="text-gray-500 text-sm">Total Files</p>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white"><%= uploadedFiles %></h2>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+                    <%= uploadedFiles %>
+                </h2>
             </div>
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
                 <p class="text-gray-500 text-sm">Storage Used</p>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">1.2 GB</h2>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+                    <%= formatBytes(storageUsed) %>
+                </h2>
             </div>
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
@@ -79,7 +83,8 @@
 
                     <div class="flex justify-between items-center mb-3">
                         <i class="ri-file-line text-2xl text-blue-500"></i>
-                        <a href="/download/<%= file.fileId %>" download="<%= file.fileName %>" class="text-white text-2xl"><i class="ri-download-cloud-2-line"></i></a>
+                        <a href="/download/<%= file.fileId %>" download="<%= file.fileName %>"
+                            class="text-white text-2xl"><i class="ri-download-cloud-2-line"></i></a>
                     </div>
 
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-white truncate">

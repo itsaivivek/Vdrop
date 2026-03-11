@@ -9,6 +9,10 @@ const cookieParser = require('cookie-parser')
 const indexRouter = require('./routes/index.routes')
 
 const app = express();
+const formatBytes = require('./utils/formatBytes');
+
+// Make it available to all EJS templates
+app.locals.formatBytes = formatBytes;
 
 
 app.set('view engine', 'ejs');

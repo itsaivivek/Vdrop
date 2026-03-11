@@ -4,6 +4,7 @@ const fileSchema = new mongoose.Schema({
     userId: { type: String, required: true }, // Appwrite User ID
     fileId: { type: String, required: true }, // Appwrite File ID
     fileName: { type: String, required: true },
+    fileSize: { type: Number, default: 0 },
     uploadedAt: { type: Date, default: Date.now }
 });
 
