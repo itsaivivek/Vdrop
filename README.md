@@ -1,8 +1,9 @@
 # Vdrop - Your Personal Cloud Storage
 
-Vdrop is a simple full-stack web app that works like **Google Drive**.  
-You can sign up, log in, upload files, download them, see how much storage you used, and check your most recent upload time.  
-It is built for learning and personal use.
+**Vdrop** is a full-stack web app that works like a simple Google Drive.  
+You can sign up, log in safely, upload files, download them, see your total storage used, and check when you last uploaded something.  
+
+Files are stored securely in **Appwrite** (switched from Firebase), while user data and file info live in **MongoDB**. Built with Express + EJS for easy learning.
 
 <p align="center">
   <img src="./img/Screenshot%202026-03-11%20at%2020-11-32%20Vdrop.png" width="40%" />
@@ -11,156 +12,136 @@ It is built for learning and personal use.
   <img src="./img/Screenshot%202026-03-11%20at%2020-12-02%20.png" width="40%" />
 </p>
 
+## ✨ Features
+- Secure signup and login (passwords are hashed)
+- Upload any file type
+- Download files with correct name and format
+- Dashboard shows:
+  - Your files list
+  - Total storage used (e.g., "1.2 MB")
+  - Recent upload time ("Today at 3:45 PM", "Yesterday", or full date)
+- Beautiful responsive design with Tailwind CSS + Flowbite
+- Only logged-in users can see their files
 
-## Features
+## 🛠 Technologies & Packages (and what they do)
 
-- User signup and login (with secure password + JWT cookie)
-- Upload files (any type, stored in Appwrite bucket)
-- Download files (with correct file name and type — no corruption)
-- See total storage used (in KB / MB / GB)
-- Show time of most recent upload (Today, Yesterday, or full date)
-- Simple and clean dashboard with Tailwind CSS + Flowbite
-- MongoDB to save user info and file details
+- **Express.js** — Main web server and routing (handles /home, /upload, /download).
+- **EJS** — Builds dynamic HTML pages (shows your files on the dashboard).
+- **Mongoose** — Connects to MongoDB and defines clean data models for users and files.
+- **node-appwrite** — Talks to Appwrite cloud storage to actually upload and download real files.
+- **Multer** — Catches files from the upload form and keeps them in memory (so we can send them straight to Appwrite).
+- **bcrypt** — Hashes passwords so they stay safe even if someone sees the database.
+- **jsonwebtoken** — Creates secure login tokens.
+- **cookie-parser** — Reads the login token from the browser cookie.
+- **express-validator** — Checks form data (email format, password length) before saving.
+- **dotenv** — Loads secret keys from the .env file.
+- **Custom formatBytes** — Turns raw bytes into easy-to-read sizes (used in dashboard).
 
-## Technologies Used
-
-- **Backend**: Node.js + Express.js
-- **Frontend**: EJS templates + Tailwind CSS + Flowbite (for nice UI)
-- **Database**: MongoDB (Mongoose for user & file models)
-- **File Storage**: Appwrite Storage (cloud bucket for real files)
-- **File Handling**: Multer (memory storage for uploads)
-- **Authentication**: JWT (JSON Web Tokens) stored in httpOnly cookie
-- Other: node-appwrite SDK, dotenv, cookie-parser, bcrypt
-
-## Project Structure (How the Code Works)
+## 📁 File Structure & Code Explanation
 
 ```
-## Project Structure
 Vdrop/
-├── config/                      # Configuration files
-│   ├── config.js
-│   ├── appwrite.config.js
-│   └── db.js
-├── multer.config.js             # Multer setup for file uploads
-├── middlewares/                 # Authentication & other middleware
-│   └── auth.middleware.js
-├── models/                      # Mongoose schemas
-│   ├── file.models.js
-│   └── user.model.js
-├── node_modules/                # (ignored in .gitignore)
-├── public/                      # Static files
-│   └── favicon.ico
-├── routes/                      # All route handlers
-│   ├── index.routes.js          # Main routes (home, upload, download...)
-│   └── user.routes.js           # Auth routes (login, signup...)
-├── utils/                       # Helper functions
-│   └── formatBytes.js
-├── views/                       # EJS templates
-│   ├── home.ejs
-│   ├── index.ejs
-│   ├── login.ejs
-│   ├── register.ejs
-│   └── temp.ejs
-├── .env                         # Environment variables (never commit!)
-├── .gitignore
-├── app.js                       # Main Express app entry point
-├── package.json
-├── package-lock.json
-├── LICENSE
-└── README.md
+├── app.js                    # Starts everything. Sets up Express, EJS, connects to DB, loads routes, serves static files, and makes formatBytes available to all templates.
+├── package.json              # Lists every package we use and the "npm start" command.
+├── .env                      # Secret keys (not pushed to GitHub).
+├── config/
+│   ├── db.js                 # Connects the app to MongoDB.
+│   ├── appwrite.config.js    # Creates the Appwrite client and storage service using your keys.
+│   └── multer.config.js      # Sets up Multer with memory storage (so req.file.buffer is ready for Appwrite).
+├── middlewares/
+│   └── authe.js              # Checks the JWT cookie. If valid, adds user info to req.user. Protects /home, /upload, /download.
+├── models/
+│   ├── user.model.js         # Defines user data (username, email, hashed password) with basic length checks.
+│   └── file.models.js        # Stores file metadata (userId, Appwrite fileId, name, size, upload date).
+├── routes/
+│   ├── user.routes.js        # Register & login pages + forms. Validates input, hashes password, creates JWT, sets cookie.
+│   └── index.routes.js       # Main logic:
+│       • / → landing page
+│       • /home → shows files, calculates storage, recent time
+│       • /upload → Multer catches file → Appwrite saves it → MongoDB saves metadata
+│       • /download/:fileId → Checks you own the file → streams from Appwrite
+├── utils/
+│   └── formatBytes.js        # Simple helper: converts bytes to "KB", "MB", "GB" (used on dashboard).
+├── views/                    # EJS templates (what the user sees)
+│   ├── index.ejs             # Welcome/landing page
+│   ├── register.ejs          # Signup form
+│   ├── login.ejs             # Login form
+│   ├── home.ejs              # Dashboard with stats cards, file grid, upload button (uses Tailwind + Flowbite)
+│   └── temp.ejs              # Temporary/test template
+├── public/                   # Static files (favicon.ico)
+└── img/                      # Website Screenshots
 ```
 
-### Important Code Parts (Simple Explanation)
+Everything is neatly separated — configs for settings, models for data, routes for logic, middleware for security.
 
-- **app.js**  
-  Starts the server, connects to MongoDB, sets EJS as view engine, serves static files from `/public`, uses cookie-parser and routes.
+## 🚀 How to Run Locally
 
-- **models/file.models.js**  
-  Saves info about each file: userId, fileId (from Appwrite), fileName, fileSize, uploadedAt date.
+### What you need
+- Node.js (v18 or higher)
+- MongoDB (local or MongoDB Atlas)
+- Free Appwrite account (https://cloud.appwrite.io)
 
-- **routes/index.routes.js**  
-  - `/` → home or redirect to login  
-  - `/signup`, `/login` → create/login user, set JWT cookie  
-  - `/home` → show dashboard with files list, storage used, recent upload time  
-  - `/upload` → take file from form → save to Appwrite → save info to MongoDB  
-  - `/download/:fileId` → check owner → get file from Appwrite → send to browser correctly  
+### Step-by-step
 
-- **middlewares/authMiddleware.js**  
-  Checks JWT cookie → if valid, adds user info to `req.user` → else redirect to login.
-
-- **home.ejs** (dashboard)  
-  Shows cards for: number of files, storage used (formatted like 1.2 GB), recent upload (Today / Yesterday / date), list of your files with download buttons.
-
-## .env File (Important Secrets)
-
-You need a `.env` file in the root folder. **Never** push it to GitHub!
-
-Example content:
-
-```
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/vdrop     # or your MongoDB Atlas link
-JWT_SECRET=your_very_long_random_secret_here
-APPWRITE_ENDPOINT=https://cloud.appwrite.io/v1
-APPWRITE_PROJECT_ID=your_project_id
-APPWRITE_API_KEY=your_api_key_with_storage_permissions
-BUCKET_ID=your_bucket_id_in_appwrite
-```
-
-- These passwords, keys, and IDs keep your app secure and connected.
-- Get them from: MongoDB Atlas / Appwrite dashboard.
-
-## How to Run on Your Computer
-
-1. **Requirements**  
-   - Node.js (v18 or higher)  
-   - MongoDB (local or cloud)  
-   - Appwrite account & project (with a storage bucket)
-
-2. **Steps**
-
+1. **Clone the repo**
    ```bash
-   # 1. Clone or download the repo
    git clone https://github.com/itsaivivek/Vdrop.git
    cd Vdrop
-
-   # 2. Install packages
-   npm install
-
-   # 3. Create .env file (copy from below or make your own)
-   # Use the example above
-
-   # 4. Start the app
-   npm start
-   # or if you use nodemon (recommended for development)
-   npm run dev    # (add "dev": "nodemon app.js" to package.json scripts if missing)
    ```
 
-3. Open browser → go to `http://localhost:3000`
+2. **Install packages**
+   ```bash
+   npm install
+   ```
 
-4. **Test it**  
-   - Sign up → login  
-   - Upload some files (images, pdf, etc.)  
-   - Check dashboard: storage used should update, recent upload shows correct time  
-   - Click download → file should open correctly (no error/corrupted)
+3. **Create `.env` file** in the root folder:
+   ```env
+   MONGO_URI=your_mongodb_connection_string_here
+   JWT_SECRET=make_this_very_long_and_random
+   END_POINT=https://cloud.appwrite.io/v1
+   PROJECT_ID=your_appwrite_project_id
+   API_KEY=your_appwrite_api_key
+   BUCKET_ID=your_appwrite_bucket_id
+   ```
 
-## How to Contribute
+   **Quick Appwrite setup**:
+   - Create a new project
+   - Go to Storage → Create a bucket (copy the Bucket ID)
+   - Copy Project ID and create an API Key (give it Storage permissions)
+
+4. **Start the app**
+   ```bash
+   npm start
+   ```
+   (It uses nodemon so changes reload automatically)
+
+5. Open **http://localhost:3000** in your browser  
+   → Register → Login → Upload files → Enjoy!
+
+## 🤝 How to Contribute
 
 Want to help improve Vdrop? Great!
 
 1. Fork the repo
-2. Create a new branch: `git checkout -b feature/your-feature`
-3. Make changes (add delete button, folders support, search, etc.)
-4. Commit: `git commit -m "Added file delete feature"`
-5. Push: `git push origin feature/your-feature`
-6. Open a Pull Request here
+2. Create a branch: `git checkout -b feature/amazing-idea`
+3. Make your changes and test locally
+4. Commit: `git commit -m "Add amazing feature"`
+5. Push and open a Pull Request
 
-Ideas to add:
-- File delete option
-- Folders / directories
-- File preview (images/pdf)
-- Share links
-- Dark mode toggle
-- File search
+**Easy things you can add**:
+- Delete file button
+- Search box
+- File preview (images/PDF)
+- Folders
+- Logout button
+- Better error messages
 
-Feel free to open issues or PRs anytime!
+Open an issue first if it's a big change. Follow the existing code style and add comments!
+
+## License
+MIT License (see LICENSE file)
+
+---
+
+Made with ❤️ by Vivek  
+Feel free to use, learn from, and improve this project!
